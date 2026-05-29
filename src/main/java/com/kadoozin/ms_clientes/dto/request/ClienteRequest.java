@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.br.CPF;
 public record ClienteRequest(
        @CPF String cpf,
        @NotBlank String nome,
+       @NotBlank String endereco,
        @NotNull Integer idade
 ) {
 }

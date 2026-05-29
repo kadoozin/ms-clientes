@@ -17,6 +17,17 @@ server:
     include-binding-errors: never
     include-exception: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+
 rabbitmq:
   exchange:
     cliente: cliente.exchange
@@ -28,6 +39,8 @@ rabbitmq:
 eureka:
   client:
     enabled: true
+    healthcheck:
+      enabled: true
     register-with-eureka: true
     fetch-registry: true
     service-url:

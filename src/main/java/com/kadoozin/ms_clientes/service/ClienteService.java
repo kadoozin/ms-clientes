@@ -4,7 +4,10 @@ import com.kadoozin.ms_clientes.database.model.Cliente;
 import com.kadoozin.ms_clientes.database.repository.ClienteRepository;
 import com.kadoozin.ms_clientes.dto.event.ClienteEvent;
 import com.kadoozin.ms_clientes.dto.request.ClienteRequest;
+import com.kadoozin.ms_clientes.dto.response.ClienteCartaoResponse;
+import com.kadoozin.ms_clientes.dto.response.ClienteListResponse;
 import com.kadoozin.ms_clientes.dto.response.ClienteResponse;
+import java.util.List;
 import com.kadoozin.ms_clientes.exceptions.ResourceNotFoundException;
 import com.kadoozin.ms_clientes.mapper.ClienteMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +39,17 @@ public class ClienteService {
          Cliente cliente = clienteRepository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente nao encontrado: " + cpf));
         return clienteMapper.toResponse(cliente);
+    }
+
+    @Transactional(readOnly = true)
+    public ClienteCartaoResponse getClienteCartaoByCpf(String cpf) {
+        Cliente cliente = clienteRepository.findByCpf(cpf)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente nao encontrado: " + cpf));
+        return new ClienteCartaoResponse(cliente.getNome(), cliente.getCpf(), cliente.getEndereco());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClienteListResponse> findAll() {
+        return clienteMapper.toListResponse(clienteRepository.findAll());
     }
 }
