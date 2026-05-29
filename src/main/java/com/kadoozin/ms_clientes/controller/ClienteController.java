@@ -1,6 +1,8 @@
 package com.kadoozin.ms_clientes.controller;
 
 import com.kadoozin.ms_clientes.dto.request.ClienteRequest;
+import com.kadoozin.ms_clientes.dto.response.ClienteCartaoResponse;
+import com.kadoozin.ms_clientes.dto.response.ClienteListResponse;
 import com.kadoozin.ms_clientes.dto.response.ClienteResponse;
 import com.kadoozin.ms_clientes.service.ClienteService;
 import jakarta.validation.Valid;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/clientes")
@@ -35,12 +38,20 @@ public class ClienteController {
         return ResponseEntity.created(headerLocation).body(response);
     }
 
-    @GetMapping({"", "/{cpf}"})
-    public ResponseEntity<ClienteResponse> findClienteByCpf(@PathVariable(required = false) @CPF String cpf){
-        if (cpf == null || cpf.isBlank()) {
-            log.warn("Solicitacao GET /clientes sem cpf informado");
-            return ResponseEntity.badRequest().build();
-        }
+    @GetMapping
+    public ResponseEntity<List<ClienteListResponse>> findAll() {
+        log.info("Recebida solicitacao de listagem de todos os clientes");
+        return ResponseEntity.ok(clienteService.findAll());
+    }
+
+    @GetMapping("/cartao/{cpf}")
+    public ResponseEntity<ClienteCartaoResponse> getClienteCartaoByCpf(@PathVariable String cpf) {
+        log.info("Recebida solicitacao de consulta de cliente para cartao por cpf={}", maskCpf(cpf));
+        return ResponseEntity.ok(clienteService.getClienteCartaoByCpf(cpf));
+    }
+
+    @GetMapping("/{cpf}")
+    public ResponseEntity<ClienteResponse> findClienteByCpf(@PathVariable @CPF String cpf){
         log.info("Recebida solicitacao de consulta de cliente por cpf={}", maskCpf(cpf));
         return ResponseEntity.ok(clienteService.findClienteByCpf(cpf));
     }
