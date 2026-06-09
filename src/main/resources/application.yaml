@@ -10,7 +10,7 @@ spring:
     password: ${RABBITMQ_PASS:guest}
 
 server:
-  port: 0
+  port: ${PORT:8081}
   error:
     include-stacktrace: never
     include-message: never
@@ -44,7 +44,8 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://admin-eureka-username:admin-eureka-password@localhost:8761/eureka/
+      defaultZone: http://admin-eureka-username:admin-eureka-password@eureka-server:8761/eureka
   instance:
+    hostname: ${HOSTNAME:localhost}
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
